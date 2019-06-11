@@ -45,19 +45,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             e.printStackTrace();
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-
         return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) {
         User user = ((User) authentication.getPrincipal());
-
         List<String> roles = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-
         String token = Jwts.builder()
                 .signWith(Keys.hmacShaKeyFor(properties.getSECRET().getBytes()), SignatureAlgorithm.HS512)
                 .setHeaderParam("typ", properties.getTOKEN_TYPE())
@@ -65,9 +62,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setAudience(properties.getTOKEN_AUDIENCE())
                 .setSubject(user.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .claim("rol", roles)
+                .claim("role", roles)
                 .compact();
-
         response.addHeader(properties.getTOKEN_HEADER(), properties.getTOKEN_PREFIX() + token);
     }
 
@@ -90,7 +86,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 }

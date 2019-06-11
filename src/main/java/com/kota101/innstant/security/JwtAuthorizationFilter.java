@@ -1,7 +1,12 @@
 package com.kota101.innstant.security;
 
 import com.kota101.innstant.constant.JwtConstants;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,12 +36,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
         String header = request.getHeader(properties.getTOKEN_HEADER());
-
         if (StringUtils.isEmpty(header) || !header.startsWith(properties.getTOKEN_PREFIX())) {
             filterChain.doFilter(request, response);
             return;
         }
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
@@ -52,7 +55,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .getBody()
                         .getSubject();
                 List<SimpleGrantedAuthority> authorities = ((List<?>) parsedToken.getBody()
-                        .get("rol")).stream()
+                        .get("role")).stream()
                         .map(authority -> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
                 if (!StringUtils.isEmpty(username)) {
