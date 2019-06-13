@@ -10,9 +10,9 @@ public interface RoomService {
 
     Mono<Room> getRoomById(ObjectId roomId);
 
-    Mono<Room> createRoom(Room room);
+    Mono<Room> createRoom(String ownerId, Room room);
 
-    Mono<Room> updateRoom(ObjectId roomId, Room room);
+    Mono<Room> updateRoom(String ownerId, ObjectId roomId, Room room);
 
     Mono<Room> deleteRoom(ObjectId roomId);
 }

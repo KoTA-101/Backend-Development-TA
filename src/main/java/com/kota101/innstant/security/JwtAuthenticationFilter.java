@@ -1,6 +1,6 @@
 package com.kota101.innstant.security;
 
-import com.kota101.innstant.constant.JwtConstants;
+import com.kota101.innstant.properties.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
-    private final JwtConstants properties = new JwtConstants();
+    private final JwtProperties properties = new JwtProperties();
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setIssuer(properties.getTOKEN_ISSUER())
                 .setAudience(properties.getTOKEN_AUDIENCE())
                 .setSubject(user.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
                 .claim("role", roles)
                 .compact();
         response.addHeader(properties.getTOKEN_HEADER(), properties.getTOKEN_PREFIX() + token);

@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +22,9 @@ public class Room {
 
     @Field("name")
     private String name;
+
+    @Field("owner_id")
+    private String ownerId;
 
     @Field("type")
     private String type;
@@ -45,6 +49,9 @@ public class Room {
 
     @Field("dp_percentage")
     private int dpPercentage;
+
+    @Field("photos")
+    private List<String> photos;
 
     public Room(ObjectId id) {
         this._id = id;

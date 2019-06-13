@@ -1,6 +1,6 @@
 package com.kota101.innstant.security;
 
-import com.kota101.innstant.constant.JwtConstants;
+import com.kota101.innstant.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-    private final JwtConstants properties = new JwtConstants();
+    private final JwtProperties properties = new JwtProperties();
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);

@@ -12,6 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +73,7 @@ public class UserServiceImplementation implements UserService {
     @Override
     public Mono<User> addUserRooms(ObjectId userId, ObjectId roomId) {
         return getUserById(userId).doOnSuccess(findUser -> {
-            ArrayList<Room> rooms = new ArrayList<>();
+            List<Room> rooms = new ArrayList<>();
             if (findUser.getRooms() == null) {
                 rooms.add(new Room(roomId));
             } else {

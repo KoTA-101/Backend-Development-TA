@@ -25,14 +25,16 @@ public class RoomServiceImplementation implements RoomService {
     }
 
     @Override
-    public Mono<Room> createRoom(Room room) {
+    public Mono<Room> createRoom(String ownerId, Room room) {
+        room.setOwnerId(ownerId);
         return roomRepository.insert(room);
     }
 
     @Override
-    public Mono<Room> updateRoom(ObjectId roomId, Room room) {
+    public Mono<Room> updateRoom(String ownerId, ObjectId roomId, Room room) {
         return getRoomById(roomId).doOnSuccess(findRoom -> {
             findRoom.setName(room.getName());
+            findRoom.setOwnerId(ownerId);
             findRoom.setType(room.getType());
             findRoom.setLocation(room.getLocation());
             findRoom.setLatitude(room.getLatitude());
@@ -41,6 +43,7 @@ public class RoomServiceImplementation implements RoomService {
             findRoom.setDescription(room.getDescription());
             findRoom.setPrice(room.getPrice());
             findRoom.setDpPercentage(room.getDpPercentage());
+            findRoom.setPhotos(room.getPhotos());
             roomRepository.save(findRoom).subscribe();
         });
     }

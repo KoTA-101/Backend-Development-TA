@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -41,7 +41,7 @@ public class User {
     @Field("pin")
     private String pin;
 
-    @Field("profile_photo")
+    @Field("profile")
     private String profilePhoto;
 
     @Field("id_card_photo")
@@ -52,5 +52,5 @@ public class User {
 
     @DBRef
     @Field("rooms")
-    private ArrayList<Room> rooms;
+    private List<Room> rooms;
 }
