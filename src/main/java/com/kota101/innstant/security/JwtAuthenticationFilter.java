@@ -1,23 +1,22 @@
 package com.kota101.innstant.security;
 
+import com.kota101.innstant.data.repository.UserRepository;
 import com.kota101.innstant.properties.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -25,32 +24,36 @@ import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+    private UserRepository userRepository;
+    private CryptoGenerator cryptoGenerator = new CryptoGenerator();
     private final JwtProperties properties = new JwtProperties();
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
         setFilterProcessesUrl("/users/authenticate");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        JSONObject jsonObject = getRequestBodyParams(request);
-        String username = null;
-        String password = null;
-        try {
-            Objects.requireNonNull(jsonObject);
-            username = jsonObject.getString("username");
-            password = jsonObject.getString("password");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        final String authorization = request.getHeader("Authorization");
+        if (authorization != null && authorization.startsWith("Basic")) {
+            String[] value = new String(Base64.getDecoder().decode(authorization.substring("Basic".length()).trim())).split(":", 2);
+            String email = value[0];
+            String password = value[1];
+            if (email != null && password != null) {
+                if (cryptoGenerator.verifyHash(password, Objects.requireNonNull(userRepository.findByEmail(email).block()).getPassword())) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+                    return authenticationManager.authenticate(authenticationToken);
+                }
+            }
         }
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        return authenticationManager.authenticate(authenticationToken);
+        return null;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) {
-        User user = ((User) authentication.getPrincipal());
+        User user = getPrincipal(authentication);
         List<String> roles = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
@@ -67,25 +70,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader(properties.getTOKEN_HEADER(), properties.getTOKEN_PREFIX() + token);
     }
 
-    private JSONObject getRequestBodyParams(HttpServletRequest request) {
-        BufferedReader reader;
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            reader = request.getReader();
-            String line = reader.readLine();
-            while (line != null) {
-                stringBuilder.append(line).append("\n");
-                line = reader.readLine();
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            return new JSONObject(stringBuilder.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private User getPrincipal(@AuthenticationPrincipal Authentication authentication) {
+        return (User) authentication.getPrincipal();
     }
 }

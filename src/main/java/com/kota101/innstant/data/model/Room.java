@@ -8,7 +8,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -39,7 +38,7 @@ public class Room {
     private double longitude;
 
     @Field("amenities")
-    private ArrayList<String> amenities;
+    private List<String> amenities;
 
     @Field("description")
     private String description;

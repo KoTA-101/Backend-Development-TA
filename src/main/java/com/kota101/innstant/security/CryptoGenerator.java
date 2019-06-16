@@ -11,7 +11,7 @@ public class CryptoGenerator {
         return encoder.encode(plainText);
     }
 
-    public boolean verifyHash(String plainText, String hashedPassword) {
+    boolean verifyHash(String plainText, String hashedPassword) {
         return encoder.matches(plainText, hashedPassword);
     }
 }
