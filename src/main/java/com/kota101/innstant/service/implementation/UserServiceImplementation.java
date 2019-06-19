@@ -7,6 +7,8 @@ import com.kota101.innstant.security.CryptoGenerator;
 import com.kota101.innstant.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -57,16 +59,26 @@ public class UserServiceImplementation implements UserService {
     @Override
     public Mono<User> modifyUserPassword(ObjectId userId, String password) {
         return getUserById(userId).doOnSuccess(findUser -> {
-            findUser.setPassword(cryptoGenerator.generateHash(password));
-            userRepository.save(findUser).subscribe();
+            try {
+                JSONObject jsonObject = new JSONObject(password);
+                findUser.setPassword(cryptoGenerator.generateHash(jsonObject.getString("password")));
+                userRepository.save(findUser).subscribe();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
     }
 
     @Override
     public Mono<User> modifyUserPin(ObjectId userId, String pin) {
         return getUserById(userId).doOnSuccess(findUser -> {
-            findUser.setPin(cryptoGenerator.generateHash(pin));
-            userRepository.save(findUser).subscribe();
+            try {
+                JSONObject jsonObject = new JSONObject(pin);
+                findUser.setPin(cryptoGenerator.generateHash(jsonObject.getString("pin")));
+                userRepository.save(findUser).subscribe();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
     }
 
