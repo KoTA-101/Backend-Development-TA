@@ -43,8 +43,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             String email = value[0];
             String password = value[1];
             if (email != null && password != null) {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
                 if (cryptoGenerator.verifyHash(password, Objects.requireNonNull(userRepository.findByEmail(email).block()).getPassword())) {
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+                    return authenticationManager.authenticate(authenticationToken);
+                } else {
+                    authenticationToken.setAuthenticated(false);
                     return authenticationManager.authenticate(authenticationToken);
                 }
             }
