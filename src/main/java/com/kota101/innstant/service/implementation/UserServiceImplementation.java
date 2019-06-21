@@ -60,8 +60,7 @@ public class UserServiceImplementation implements UserService {
     public Mono<User> modifyUserPassword(ObjectId userId, String password) {
         return getUserById(userId).doOnSuccess(findUser -> {
             try {
-                JSONObject jsonObject = new JSONObject(password);
-                findUser.setPassword(cryptoGenerator.generateHash(jsonObject.getString("password")));
+                findUser.setPassword(cryptoGenerator.generateHash(new JSONObject(password).getString("password")));
                 userRepository.save(findUser).subscribe();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -73,8 +72,7 @@ public class UserServiceImplementation implements UserService {
     public Mono<User> modifyUserPin(ObjectId userId, String pin) {
         return getUserById(userId).doOnSuccess(findUser -> {
             try {
-                JSONObject jsonObject = new JSONObject(pin);
-                findUser.setPin(cryptoGenerator.generateHash(jsonObject.getString("pin")));
+                findUser.setPin(cryptoGenerator.generateHash(new JSONObject(pin).getString("pin")));
                 userRepository.save(findUser).subscribe();
             } catch (JSONException e) {
                 e.printStackTrace();

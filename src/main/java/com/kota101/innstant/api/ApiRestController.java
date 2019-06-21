@@ -1,10 +1,12 @@
 package com.kota101.innstant.api;
 
 import com.kota101.innstant.data.model.Room;
+import com.kota101.innstant.data.model.Transaction;
 import com.kota101.innstant.data.model.User;
 import com.kota101.innstant.properties.StorageProperties;
 import com.kota101.innstant.service.FileStorageService;
 import com.kota101.innstant.service.RoomService;
+import com.kota101.innstant.service.TransactionService;
 import com.kota101.innstant.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +35,10 @@ import java.util.Objects;
 public class ApiRestController {
     private final UserService userService;
     private final RoomService roomService;
+    private final TransactionService transactionService;
     private final FileStorageService fileStorageService;
+
+    /*User Endpoints*/
 
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
@@ -77,6 +82,8 @@ public class ApiRestController {
         return userService.deleteUser(userId);
     }
 
+    /*Room Endpoints*/
+
     @GetMapping("/rooms")
     @ResponseStatus(HttpStatus.OK)
     public Flux<Room> getRooms() {
@@ -108,6 +115,46 @@ public class ApiRestController {
         Mono<Room> mono = roomService.deleteRoom(roomId);
         return userService.deleteUserRooms(userId, Objects.requireNonNull(mono.block()).get_id());
     }
+
+    /*Transaction Endpoints*/
+
+    @GetMapping("/transactions")
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<Transaction> getTransactions() {
+        return transactionService.getTransactions();
+    }
+
+    @GetMapping("transactions/{transactionId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Transaction> getTransactionById(@PathVariable("transactionId") ObjectId transactionId) {
+        return transactionService.getTransactionById(transactionId);
+    }
+
+    @PostMapping("/transactions")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Transaction> createTransaction(@Valid @RequestBody Transaction transaction) {
+        return transactionService.createTransaction(transaction);
+    }
+
+    @PutMapping("/transactions/{transactionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Transaction> updateTransaction(@PathVariable("transactionId") ObjectId transactionId, @Valid @RequestBody Transaction transaction) {
+        return transactionService.updateTransaction(transactionId, transaction);
+    }
+
+    @PatchMapping("/transactions/{transactionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Transaction> modifyTransactionPaymentStatus(@PathVariable("transactionId") ObjectId transactionId, @Valid @RequestBody String paymentStatus) {
+        return transactionService.modifyTransactionPaymentStatus(transactionId, paymentStatus);
+    }
+
+    @DeleteMapping("transactions/{transactionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Transaction> deleteTransaction(@PathVariable("transactionId") ObjectId transactionId) {
+        return transactionService.deleteTransaction(transactionId);
+    }
+
+    /*File Upload and Download Endpoints*/
 
     @PostMapping("/photos/upload_photo")
     @ResponseStatus(HttpStatus.CREATED)

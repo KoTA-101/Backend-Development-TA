@@ -34,6 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/users/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/rooms/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/transactions/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/authenticate").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/users/{\\d+}/").denyAll()

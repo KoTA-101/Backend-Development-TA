@@ -53,9 +53,4 @@ public class User {
     @DBRef
     @Field("rooms")
     private List<Room> rooms;
-
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 }

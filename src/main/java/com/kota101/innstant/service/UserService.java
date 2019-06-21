@@ -1,6 +1,5 @@
 package com.kota101.innstant.service;
 
-import com.kota101.innstant.data.model.Room;
 import com.kota101.innstant.data.model.User;
 import org.bson.types.ObjectId;
 import reactor.core.publisher.Flux;
