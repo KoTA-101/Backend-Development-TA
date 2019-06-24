@@ -49,6 +49,12 @@ public class Room {
     @Field("dp_percentage")
     private int dpPercentage;
 
+    @Field("rating")
+    private float rating;
+
+    @Field("total_review")
+    private int totalReview;
+
     @Field("photos")
     private List<String> photos;
 
