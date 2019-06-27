@@ -41,7 +41,7 @@ public class User {
     @Field("pin")
     private String pin;
 
-    @Field("profile")
+    @Field("profile_photo")
     private String profilePhoto;
 
     @Field("id_card_photo")
