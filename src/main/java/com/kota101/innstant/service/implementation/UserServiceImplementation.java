@@ -36,7 +36,10 @@ public class UserServiceImplementation implements UserService {
     public Mono<User> createUser(User user) {
         user.setPassword(cryptoGenerator.generateHash(user.getPassword()));
         user.setPin(cryptoGenerator.generateHash(user.getPin()));
-        return userRepository.insert(user);
+        return userRepository.insert(user).doOnSuccess(createdUser -> {
+            createdUser.setUserId(createdUser.get_id().toString());
+            userRepository.save(createdUser).subscribe();
+        });
     }
 
     @Override

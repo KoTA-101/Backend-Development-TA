@@ -19,6 +19,9 @@ public class Room {
     @Field("_id")
     private ObjectId _id;
 
+    @Field("room_id")
+    private String roomId;
+
     @Field("name")
     private String name;
 

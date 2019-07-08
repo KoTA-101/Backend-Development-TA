@@ -20,6 +20,9 @@ public class User {
     @Field("_id")
     private ObjectId _id;
 
+    @Field("user_id")
+    private String userId;
+
     @Field("first_name")
     private String firstName;
 

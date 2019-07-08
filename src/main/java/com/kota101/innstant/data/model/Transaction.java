@@ -21,6 +21,9 @@ public class Transaction {
     @Field("_id")
     private ObjectId _id;
 
+    @Field("transaction_id")
+    private String transactionId;
+
     @Field("host_id")
     private String hostId;
 

@@ -27,7 +27,10 @@ public class RoomServiceImplementation implements RoomService {
     @Override
     public Mono<Room> createRoom(String ownerId, Room room) {
         room.setOwnerId(ownerId);
-        return roomRepository.insert(room);
+        return roomRepository.insert(room).doOnSuccess(createdRoom -> {
+            createdRoom.setRoomId(createdRoom.get_id().toString());
+            roomRepository.save(createdRoom).subscribe();
+        });
     }
 
     @Override

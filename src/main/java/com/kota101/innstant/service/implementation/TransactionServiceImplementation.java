@@ -32,7 +32,10 @@ public class TransactionServiceImplementation implements TransactionService {
     @Override
     public Mono<Transaction> createTransaction(Transaction transaction) {
         transaction.setTransactionTimestamp(Timestamp.from(Instant.now()));
-        return transactionRepository.insert(transaction);
+        return transactionRepository.insert(transaction).doOnSuccess(createdTransaction -> {
+            createdTransaction.setTransactionId(createdTransaction.get_id().toString());
+            transactionRepository.save(createdTransaction).subscribe();
+        });
     }
 
     @Override
