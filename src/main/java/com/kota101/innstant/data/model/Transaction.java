@@ -46,4 +46,7 @@ public class Transaction {
 
     @Field("payment_status")
     private String paymentStatus;
+
+    @Field("is_booking_canceled")
+    private Boolean isBookingCanceled;
 }

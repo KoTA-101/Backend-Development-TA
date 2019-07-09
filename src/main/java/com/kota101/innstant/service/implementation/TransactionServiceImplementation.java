@@ -32,6 +32,7 @@ public class TransactionServiceImplementation implements TransactionService {
     @Override
     public Mono<Transaction> createTransaction(Transaction transaction) {
         transaction.setTransactionTimestamp(Timestamp.from(Instant.now()));
+        transaction.setIsBookingCanceled(false);
         return transactionRepository.insert(transaction).doOnSuccess(createdTransaction -> {
             createdTransaction.setTransactionId(createdTransaction.get_id().toString());
             transactionRepository.save(createdTransaction).subscribe();
@@ -48,6 +49,7 @@ public class TransactionServiceImplementation implements TransactionService {
             findTransaction.setBookStartDate(transaction.getBookStartDate());
             findTransaction.setBookEndDate(transaction.getBookEndDate());
             findTransaction.setPaymentStatus(transaction.getPaymentStatus());
+            findTransaction.setIsBookingCanceled(transaction.getIsBookingCanceled());
             transactionRepository.save(findTransaction).subscribe();
         });
     }
@@ -61,6 +63,14 @@ public class TransactionServiceImplementation implements TransactionService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        });
+    }
+
+    @Override
+    public Mono<Transaction> cancelBooking(ObjectId transactionId) {
+        return transactionRepository.findBy_id(transactionId).doOnSuccess(findTransaction -> {
+            findTransaction.setIsBookingCanceled(true);
+            transactionRepository.save(findTransaction).subscribe();
         });
     }
 

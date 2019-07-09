@@ -16,5 +16,7 @@ public interface TransactionService {
 
     Mono<Transaction> modifyTransactionPaymentStatus(ObjectId transactionId, String paymentStatus);
 
+    Mono<Transaction> cancelBooking(ObjectId transactionId);
+
     Mono<Transaction> deleteTransaction(ObjectId transactionId);
 }

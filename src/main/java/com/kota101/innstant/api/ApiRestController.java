@@ -142,10 +142,16 @@ public class ApiRestController {
         return transactionService.updateTransaction(transactionId, transaction);
     }
 
-    @PatchMapping("/transactions/{transactionId}")
+    @PatchMapping("/transactions/{transactionId}/payment_status")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Transaction> modifyTransactionPaymentStatus(@PathVariable("transactionId") ObjectId transactionId, @Valid @RequestBody String paymentStatus) {
         return transactionService.modifyTransactionPaymentStatus(transactionId, paymentStatus);
+    }
+
+    @PatchMapping("/transactions/{transactionId}/cancel_booking")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Transaction> cancelBooking(@PathVariable("transactionId") ObjectId transactionId) {
+        return transactionService.cancelBooking(transactionId);
     }
 
     @DeleteMapping("transactions/{transactionId}")
