@@ -1,5 +1,6 @@
 package com.kota101.innstant.api;
 
+import com.kota101.innstant.data.model.HereResponse;
 import com.kota101.innstant.data.model.Room;
 import com.kota101.innstant.data.model.Transaction;
 import com.kota101.innstant.data.model.User;
@@ -90,13 +91,21 @@ public class ApiRestController {
         return roomService.getRooms();
     }
 
+    @GetMapping("/rooms/location")
+    @ResponseStatus(HttpStatus.OK)
+    public HereResponse getRoomsByLocation(@RequestParam(value = "latitude") double latitude,
+                                           @RequestParam(value = "longitude") double longitude,
+                                           @RequestParam(value = "radius", required = false, defaultValue = "1000") float radius) throws JSONException {
+        return roomService.getRoomsByLocation(latitude, longitude, radius);
+    }
+
     @GetMapping("/rooms/{roomId}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<Room> getRoomById(@PathVariable("roomId") ObjectId roomId) {
         return roomService.getRoomById(roomId);
     }
 
-    @PatchMapping("/users/{userId}/rooms")
+    @PostMapping("/users/{userId}/rooms")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<User> createRoomThenModifyUserRooms(@PathVariable("userId") ObjectId userId, @Valid @RequestBody Room room) {
         Mono<Room> mono = roomService.createRoom(userId.toString(), room);
@@ -109,7 +118,7 @@ public class ApiRestController {
         return roomService.updateRoom(userId.toString(), roomId, room);
     }
 
-    @PatchMapping("/users/{userId}/rooms/{roomId}")
+    @DeleteMapping("/users/{userId}/rooms/{roomId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<User> deleteRoomThenModifyUserRooms(@PathVariable("userId") ObjectId userId, @PathVariable("roomId") ObjectId roomId) {
         Mono<Room> mono = roomService.deleteRoom(roomId);

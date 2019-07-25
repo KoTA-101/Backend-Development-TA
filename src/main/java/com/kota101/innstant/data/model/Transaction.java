@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -34,7 +33,7 @@ public class Transaction {
     private String roomId;
 
     @Field("transaction_timestamp")
-    private Timestamp transactionTimestamp;
+    private Date transactionTimestamp;
 
     @Field("book_start_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")

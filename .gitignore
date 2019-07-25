@@ -67,6 +67,7 @@
 .gradle/
 .idea/
 out/
+build/
 
 # *.iml
 # modules.xml

@@ -22,6 +22,9 @@ public class Room {
     @Field("room_id")
     private String roomId;
 
+    @Field("geometry_id")
+    private long geometryId;
+
     @Field("name")
     private String name;
 
