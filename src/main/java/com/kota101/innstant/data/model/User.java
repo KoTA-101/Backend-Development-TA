@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "user")
+@Document(collection = "users")
 public class User {
     @Id
     @Field("_id")

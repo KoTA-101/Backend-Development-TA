@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "room")
+@Document(collection = "rooms")
 public class Room {
     @Id
     @Field("_id")

@@ -14,7 +14,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "transaction")
+@Document(collection = "transactions")
 public class Transaction {
     @Id
     @Field("_id")

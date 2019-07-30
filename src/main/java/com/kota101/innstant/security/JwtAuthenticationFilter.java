@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setIssuer(properties.getTOKEN_ISSUER())
                 .setAudience(properties.getTOKEN_AUDIENCE())
                 .setSubject(user.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
+                    .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .claim("role", roles)
                 .compact();
         response.addHeader(properties.getTOKEN_HEADER(), properties.getTOKEN_PREFIX() + token);
